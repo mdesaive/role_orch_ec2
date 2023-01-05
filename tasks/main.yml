@@ -1,0 +1,36 @@
+---
+# tasks file for role_orch_ec2
+
+- name: Include encrypted variables with AWS access keys.
+  include_vars: "vars/vault.yml"
+
+# - name: Check for EC2 Instances
+
+#   ec2_instance_info:
+#     aws_access_key: '{{ gz_ec2_aws_start_stop_user_key_name }}'
+#     aws_secret_key: '{{ gz_ec2_aws_start_stop_user_key_secret }}'
+#     region: eu-west-1
+#   register: result
+
+#     # - debug:
+#     #     var: result
+
+- name: Stop instances
+  ec2:
+    aws_access_key: '{{ gz_ec2_aws_start_stop_user_key_name }}'
+    aws_secret_key: '{{ gz_ec2_aws_start_stop_user_key_secret }}'
+    instance_ids: '{{ gz_ec2_instance_ids }}'
+    region: '{{ gz_ec2_region }}'
+    state: stopped
+    wait: True
+  when: gz_ec2_action == "stop"
+
+- name: Start instances
+  ec2:
+    aws_access_key: '{{ gz_ec2_aws_start_stop_user_key_name }}'
+    aws_secret_key: '{{ gz_ec2_aws_start_stop_user_key_secret }}'
+    instance_ids: '{{ gz_ec2_instance_ids }}'
+    region: '{{ gz_ec2_region }}'
+    state: running
+    wait: True
+  when: gz_ec2_action == "start"
